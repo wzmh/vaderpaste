@@ -310,6 +310,13 @@ do -- Configs
     config:button({name = "Rejoin", callback = function()
         game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, game.JobId, lp)
     end})
+    configs:hitpart_picker({name = "Silent Aim Bone", side = "right", flag = "Hello!", default = {"Head"}, type = "R6", callback = function(parts)
+        table.foreach(parts, print)
+    end})
+    configs:hitpart_picker({name = "Silent Aim Bone", side = "right", flag = "Hello!", default = {"Head"}, type = "R15", callback = function(parts)
+        table.foreach(parts, print)
+    end})
+
 
     local configs_section = configs:section({name = "Configuration System", side = "left"})
     library.config_holder = configs_section:dropdown({name = "Configs", items = {}, flag = "config_name_list"})
@@ -323,12 +330,13 @@ do -- Configs
             name = "Are you sure you want to delete " .. flags["config_name_list"] .. " ?",
             options = {"Yes", "No"},
             callback = function(option)
+                print(option)
                 if option == "Yes" then 
                     delfile(library.directory .. "/configs/" .. flags["config_name_list"] .. ".cfg")
+                    library:config_list_update()
                 end 
-            end})
-
-        library:config_list_update()
+            end
+        })
     end})
     configs_section:button({name = "Load", callback = function()
         library:load_config(readfile(library.directory .. "/configs/" .. flags["config_name_list"] .. ".cfg"))
@@ -341,20 +349,15 @@ do -- Configs
         library:load_config(old_config)
     end})
     configs_section:button({name = "Unload Menu", callback = function()
-        library.gui:Destroy() 
-        esp_holder:Destroy() 
-        for _, connection in next, library.connections do 
-            connection:Disconnect() 
-        end     
-
-        for _, item in next, library.instances do 
-            item:Destroy()
-        end 
+        library:unload()
     end}) library:config_list_update()
 end
 
 for i = 1, 100 do 
     library:notification({text = "This is a text notification!"})
 end 
+
+legit.open_tab()
+
 
 legit.open_tab()
