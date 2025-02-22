@@ -210,7 +210,7 @@ end
                 item:Destroy()
             end 
 
-            library = nil
+            getgenv().library = nil
         end
 
         function library:convert_string_rgb(str)
@@ -4836,7 +4836,7 @@ end
                 if selected then 
                     selected.BackgroundTransparency = 1
                 end 
-                selected = hold
+                selected = "hold"
                 hold.BackgroundTransparency = 0 
 
                 cfg.set_mode("hold") 
@@ -4848,7 +4848,7 @@ end
                 if selected then 
                     selected.BackgroundTransparency = 1
                 end 
-                selected = press
+                selected = "press"
                 press.BackgroundTransparency = 0 
 
                 cfg.set_mode("toggle") 
@@ -4860,7 +4860,7 @@ end
                 if selected then 
                     selected.BackgroundTransparency = 1
                 end 
-                selected = always
+                selected = "always"
                 
                 always.BackgroundTransparency = 0 
                 cfg.set_mode("always") 
