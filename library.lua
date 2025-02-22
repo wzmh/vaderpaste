@@ -35,8 +35,12 @@ local floor = math.floor
 local min = math.min 
 local abs = math.abs 
 
+if getgenv().library then 
+    getgenv().library:unload()
+end 
+
 -- library init
-    local library = {
+    getgenv().library = {
         flags = {},
         config_flags = {},
         connections = {},   
@@ -194,6 +198,20 @@ local abs = math.abs
         function library.to_screen_point(position) 
             return camera:WorldToViewportPoint(position)
         end 	
+
+        function library:unload()
+            library.gui:Destroy() 
+
+            for _, connection in library.connections do 
+                connection:Disconnect() 
+            end     
+
+            for _, item in library.instances do 
+                item:Destroy()
+            end 
+
+            library = nil
+        end
 
         function library:convert_string_rgb(str)
             local values = {}
@@ -2720,6 +2738,7 @@ local abs = math.abs
                 flag = properties.flag or "Hitpart", 
                 default = properties.default or {"Head"},
                 type_char = properties.type or "R6",
+                callback = properties.callback or function() end
             }
 
             flags[cfg.flag] = {}
@@ -3088,6 +3107,8 @@ local abs = math.abs
 
                     glow.Visible = bools[name]
                     button.BackgroundColor3 = bools[name] and themes.preset.accent or Color3.fromRGB(38, 38, 38)
+
+                    cfg.callback(flags[cfg.flag])
                 end)
             end 
 
@@ -4300,6 +4321,9 @@ local abs = math.abs
 
                     library.current_element_open = cfg  
                 end
+
+                picker_inline.Position = dim2(0, icon_inline.AbsolutePosition.X + 1, 0, icon_inline.AbsolutePosition.Y + 17)
+                content_inline.Position = dim2(0, icon_inline.AbsolutePosition.X + 20, 0, icon_inline.AbsolutePosition.Y)
             end 
 
             icon_inline.MouseButton1Click:Connect(function()		
@@ -4315,9 +4339,7 @@ local abs = math.abs
                 end 
 
                 content_inline.Visible = not content_inline.Visible
-            end)
 
-            icon_inline:GetPropertyChangedSignal("AbsolutePosition"):Connect(function()
                 picker_inline.Position = dim2(0, icon_inline.AbsolutePosition.X + 1, 0, icon_inline.AbsolutePosition.Y + 17)
                 content_inline.Position = dim2(0, icon_inline.AbsolutePosition.X + 20, 0, icon_inline.AbsolutePosition.Y)
             end)
@@ -4422,7 +4444,7 @@ local abs = math.abs
 
             rainbow.MouseButton1Down:Connect(function()
                 selected.BackgroundTransparency = 1; 
-                selected = rainbow 
+                selected = "rainbow" 
                 rainbow.BackgroundTransparency = 0 
 
                 flags[cfg.flag]["animation"] = "rainbow"
@@ -4431,7 +4453,7 @@ local abs = math.abs
 
             fade_alpha.MouseButton1Down:Connect(function()
                 selected.BackgroundTransparency = 1; 
-                selected = fade_alpha 
+                selected = "fade_alpha" 
                 fade_alpha.BackgroundTransparency = 0 
 
                 flags[cfg.flag]["animation"] = "fade_alpha"
@@ -4440,7 +4462,7 @@ local abs = math.abs
 
             fade.MouseButton1Down:Connect(function()
                 selected.BackgroundTransparency = 1; 
-                selected = fade 
+                selected = "fade" 
                 fade.BackgroundTransparency = 0 
 
                 flags[cfg.flag]["animation"] = "fade"
@@ -4449,7 +4471,7 @@ local abs = math.abs
 
             normal.MouseButton1Down:Connect(function()
                 selected.BackgroundTransparency = 1; 
-                selected = normal 
+                selected = "normal" 
                 normal.BackgroundTransparency = 0 
 
                 flags[cfg.flag]["animation"] = "normal"
@@ -5196,4 +5218,3 @@ local abs = math.abs
     -- 
 -- 
 
-return library;
