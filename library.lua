@@ -35,10 +35,6 @@ local floor = math.floor
 local min = math.min 
 local abs = math.abs 
 
-if getgenv().library then 
-    getgenv().library:unload()
-end 
-
 -- library init
     getgenv().library = {
         flags = {},
